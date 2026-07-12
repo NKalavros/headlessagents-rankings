@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DREAM Coverage Matrix — Host-Verified Runs</title>
+<style>
+  :root {
+    --bg: #eef1ee;
+    --surface: #ffffff;
+    --surface-2: #f4f6f3;
+    --border: #d7dcd6;
+    --border-strong: #c2c9c1;
+    --text: #1a1f1b;
+    --muted: #5b6560;
+    --muted-2: #8b948c;
+    --accent: #2f9e6e;
+    --accent-text: #ffffff;
+    --accent-soft: rgba(47, 158, 110, 0.14);
+    --accent-soft-border: rgba(47, 158, 110, 0.4);
+    --partial: #c98a2c;
+    --partial-soft: rgba(201, 138, 44, 0.13);
+    --zero: transparent;
+    --shadow: 0 1px 2px rgba(20, 30, 22, 0.06);
+    --font-display: Charter, "Iowan Old Style", "Palatino Linotype", Georgia, "Noto Serif", serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #11151a;
+      --surface: #171c22;
+      --surface-2: #1c222a;
+      --border: #2a323b;
+      --border-strong: #3a4450;
+      --text: #e8ece7;
+      --muted: #97a19a;
+      --muted-2: #6d7770;
+      --accent: #3ecf8e;
+      --accent-text: #08211a;
+      --accent-soft: rgba(62, 207, 142, 0.14);
+      --accent-soft-border: rgba(62, 207, 142, 0.38);
+      --partial: #e0a83d;
+      --partial-soft: rgba(224, 168, 61, 0.14);
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #11151a;
+    --surface: #171c22;
+    --surface-2: #1c222a;
+    --border: #2a323b;
+    --border-strong: #3a4450;
+    --text: #e8ece7;
+    --muted: #97a19a;
+    --muted-2: #6d7770;
+    --accent: #3ecf8e;
+    --accent-text: #08211a;
+    --accent-soft: rgba(62, 207, 142, 0.14);
+    --accent-soft-border: rgba(62, 207, 142, 0.38);
+    --partial: #e0a83d;
+    --partial-soft: rgba(224, 168, 61, 0.14);
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  }
+
+  :root[data-theme="light"] {
+    --bg: #eef1ee;
+    --surface: #ffffff;
+    --surface-2: #f4f6f3;
+    --border: #d7dcd6;
+    --border-strong: #c2c9c1;
+    --text: #1a1f1b;
+    --muted: #5b6560;
+    --muted-2: #8b948c;
+    --accent: #2f9e6e;
+    --accent-text: #ffffff;
+    --accent-soft: rgba(47, 158, 110, 0.14);
+    --accent-soft-border: rgba(47, 158, 110, 0.4);
+    --partial: #c98a2c;
+    --partial-soft: rgba(201, 138, 44, 0.13);
+    --shadow: 0 1px 2px rgba(20, 30, 22, 0.06);
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body { padding: 40px 32px 72px; }
+
+  .wrap { max-width: 1180px; margin: 0 auto; }
+
+  header {
+    margin-bottom: 28px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--muted-2);
+    margin: 0 0 10px;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 30px;
+    letter-spacing: -0.01em;
+    margin: 0 0 10px;
+    text-wrap: balance;
+  }
+
+  header p {
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--muted);
+    max-width: 62ch;
+    margin: 0;
+  }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 20px;
+    margin: 26px 0 18px;
+    padding: 16px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+  }
+
+  .control-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .control-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted-2);
+    white-space: nowrap;
+  }
+
+  input[type="range"] {
+    accent-color: var(--accent);
+    width: 120px;
+  }
+
+  .mode-toggle {
+    display: inline-flex;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2px;
+    gap: 2px;
+  }
+
+  .mode-btn {
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    font-weight: 500;
+    padding: 5px 11px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+  }
+
+  .mode-btn.active {
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: var(--shadow);
+  }
+
+  .mode-btn:focus-visible {
+    outline: 2px solid var(--accent-soft-border);
+    outline-offset: 1px;
+  }
+
+  .swatch.delta {
+    background: var(--partial-soft);
+    border-color: var(--partial);
+    position: relative;
+  }
+
+  .threshold-value {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent);
+    min-width: 1.4em;
+  }
+
+  input[type="search"] {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 7px 11px;
+    font-size: 13.5px;
+    color: var(--text);
+    font-family: var(--font-body);
+    width: 200px;
+  }
+  input[type="search"]:focus {
+    outline: 2px solid var(--accent-soft-border);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+
+  .stat {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .stat strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .spacer { flex: 1; }
+
+  .legend {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .legend-swatch {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    border: 1px solid var(--border-strong);
+  }
+  .swatch.zero { background: var(--surface-2); }
+  .swatch.partial { background: var(--partial-soft); border-color: var(--partial); }
+  .swatch.full { background: var(--accent-soft); border-color: var(--accent-soft-border); }
+
+  .table-scroll {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 13px;
+  }
+
+  thead th {
+    position: sticky;
+    top: 0;
+    background: var(--surface-2);
+    z-index: 2;
+    padding: 10px 8px;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border-strong);
+    white-space: nowrap;
+  }
+
+  thead th.row-head-col {
+    left: 0;
+    z-index: 3;
+    text-align: left;
+    min-width: 260px;
+  }
+
+  thead th.agent-total {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  tbody th {
+    position: sticky;
+    left: 0;
+    background: var(--surface);
+    z-index: 1;
+    text-align: left;
+    padding: 8px 14px;
+    font-weight: 400;
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  tbody tr:nth-child(even) th,
+  tbody tr:nth-child(even) td { background-color: var(--surface-2); }
+  tbody tr:nth-child(even) th { background-color: var(--surface-2); }
+
+  .challenge-name {
+    font-weight: 600;
+    color: var(--text);
+  }
+  .prompt-name {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    margin-left: 8px;
+  }
+
+  .challenge-start th {
+    border-top: 1px solid var(--border-strong);
+  }
+  .challenge-start td {
+    border-top: 1px solid var(--border-strong);
+  }
+
+  td {
+    text-align: center;
+    padding: 6px 4px;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 13px;
+    color: var(--muted-2);
+  }
+
+  td.count-cell { position: relative; }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 26px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+  }
+
+  .pill.zero { color: var(--muted-2); opacity: 0.35; }
+  .pill.partial {
+    background: var(--partial-soft);
+    border-color: var(--partial);
+    color: var(--partial);
+    font-weight: 600;
+  }
+  .pill.full {
+    background: var(--accent-soft);
+    border-color: var(--accent-soft-border);
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .pill-delta {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--partial);
+    margin-left: 3px;
+  }
+
+  tr.row-hidden { display: none; }
+
+  .row-total {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--text);
+    border-left: 1px solid var(--border-strong);
+    background: var(--surface-2) !important;
+  }
+
+  footer {
+    margin-top: 28px;
+    font-size: 12px;
+    color: var(--muted-2);
+    font-family: var(--font-mono);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .pill { transition: background 0.15s ease, border-color 0.15s ease; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">DREAM Benchmark &middot; HeadlessAgents</p>
+    <h1>Host-verified coverage, challenge &times; agent</h1>
+    <p id="modeDescription">Every cell counts runs that clear three bars: self-scored by the
+      agent, confirmed by the host-side scorer (<code>score.json</code> present,
+      <code>verified: true</code>), and accompanied by a <code>summary.txt</code> write-up
+      &mdash; self-reported-only runs and score-only runs missing their summary don't count.
+      Retired agents (OpenHands, Qwen) are excluded. Drag the threshold to see which
+      combinations clear it.</p>
+  </header>
+
+  <div class="controls">
+    <div class="control-group">
+      <span class="control-label">Counting</span>
+      <div class="mode-toggle" id="modeToggle" role="group" aria-label="Coverage mode">
+        <button type="button" class="mode-btn active" data-mode="verified">Host-verified</button>
+        <button type="button" class="mode-btn" data-mode="all">+ self-reported</button>
+      </div>
+    </div>
+    <div class="control-group">
+      <span class="control-label">Threshold &ge;</span>
+      <input type="range" id="threshold" min="1" max="10" value="3" />
+      <span class="threshold-value" id="thresholdValue">3</span>
+    </div>
+    <div class="control-group">
+      <span class="control-label">Filter</span>
+      <input type="search" id="search" placeholder="challenge or prompt…" />
+    </div>
+    <div class="stat" id="statLine"></div>
+    <div class="spacer"></div>
+    <div class="legend">
+      <span class="legend-swatch"><span class="swatch zero"></span>0</span>
+      <span class="legend-swatch"><span class="swatch partial"></span>below threshold</span>
+      <span class="legend-swatch"><span class="swatch full"></span>&ge; threshold</span>
+      <span class="legend-swatch" id="legendDelta"><span class="swatch delta"></span>incl. self-reported</span>
+    </div>
+  </div>
+
+  <div class="table-scroll">
+    <table id="matrix">
+      <thead>
+        <tr id="headRow"></tr>
+      </thead>
+      <tbody id="body"></tbody>
+    </table>
+  </div>
+
+  <footer id="footerNote"></footer>
+</div>
+
+<script>
+  const DATASETS = {"verified": {"agents": ["Biomni", "CODEX", "ClaudeCode", "ClaudeGLM", "CopilotCLI", "Cursor", "Gemini", "STELLA", "VirtualLab"], "rows": [{"challenge": "BEATAML", "prompt": "SC1_guided", "counts": {"ClaudeCode": 3, "STELLA": 4, "VirtualLab": 6, "Cursor": 6, "Gemini": 5, "ClaudeGLM": 6, "CODEX": 7, "Biomni": 6, "CopilotCLI": 4}}, {"challenge": "BEATAML", "prompt": "SC1_guidedpaper", "counts": {"ClaudeCode": 3, "Cursor": 2, "Biomni": 1, "STELLA": 2, "Gemini": 2, "VirtualLab": 1, "CODEX": 0, "ClaudeGLM": 0, "CopilotCLI": 0}}, {"challenge": "BEATAML", "prompt": "SC1_hard", "counts": {"CODEX": 6, "Cursor": 6, "ClaudeCode": 5, "STELLA": 5, "ClaudeGLM": 7, "CopilotCLI": 4, "Gemini": 4, "Biomni": 8, "VirtualLab": 4}}, {"challenge": "BEATAML", "prompt": "SC2_guided", "counts": {"CODEX": 5, "ClaudeCode": 4, "Cursor": 5, "CopilotCLI": 1, "Gemini": 5, "VirtualLab": 6, "Biomni": 5, "STELLA": 5, "ClaudeGLM": 10}}, {"challenge": "BEATAML", "prompt": "SC2_guidedpaper", "counts": {"ClaudeCode": 3, "Cursor": 1, "Gemini": 2, "Biomni": 2, "CopilotCLI": 1, "CODEX": 0, "ClaudeGLM": 0, "STELLA": 0, "VirtualLab": 0}}, {"challenge": "BEATAML", "prompt": "SC2_hard", "counts": {"CopilotCLI": 1, "Cursor": 4, "CODEX": 4, "ClaudeCode": 5, "ClaudeGLM": 6, "STELLA": 4, "Gemini": 4, "Biomni": 5, "VirtualLab": 6}}, {"challenge": "EAR", "prompt": "Q1_guided", "counts": {"VirtualLab": 6, "STELLA": 3, "ClaudeGLM": 3, "ClaudeCode": 0, "Gemini": 0, "CopilotCLI": 0, "Cursor": 0, "CODEX": 0, "Biomni": 0}}, {"challenge": "EAR", "prompt": "Q1_guidedpaper", "counts": {"STELLA": 2, "Cursor": 0, "Gemini": 0, "ClaudeCode": 0, "CODEX": 0, "VirtualLab": 6, "CopilotCLI": 0, "ClaudeGLM": 3, "Biomni": 0}}, {"challenge": "EAR", "prompt": "Q1_hard", "counts": {"CopilotCLI": 0, "Gemini": 0, "CODEX": 0, "Cursor": 0, "ClaudeGLM": 0, "STELLA": 0, "ClaudeCode": 0, "Biomni": 0, "VirtualLab": 0}}, {"challenge": "HFM", "prompt": "Q1_guided", "counts": {"ClaudeCode": 0, "CopilotCLI": 0}}, {"challenge": "MOD", "prompt": "Q1_guided", "counts": {"ClaudeCode": 5, "Gemini": 3, "Cursor": 4, "CODEX": 3, "ClaudeGLM": 1, "Biomni": 4, "STELLA": 4, "VirtualLab": 5, "CopilotCLI": 0}}, {"challenge": "MOD", "prompt": "Q1_guidedpaper", "counts": {"VirtualLab": 2, "Biomni": 0, "CODEX": 0, "ClaudeCode": 0, "ClaudeGLM": 0, "CopilotCLI": 0, "Cursor": 0, "Gemini": 0, "STELLA": 0}}, {"challenge": "MOD", "prompt": "Q1_guidedpaperwriteup", "counts": {"VirtualLab": 2, "Biomni": 0, "CODEX": 0, "ClaudeCode": 0, "ClaudeGLM": 0, "Cursor": 0, "Gemini": 0, "STELLA": 0}}, {"challenge": "MOD", "prompt": "Q1_hard", "counts": {"STELLA": 1, "VirtualLab": 5, "Biomni": 2, "ClaudeCode": 1, "CODEX": 0, "ClaudeGLM": 0, "Cursor": 0, "Gemini": 0}}, {"challenge": "MOD", "prompt": "Q2_guided", "counts": {"Cursor": 1, "ClaudeCode": 1, "CODEX": 2, "Biomni": 0, "ClaudeGLM": 0, "CopilotCLI": 0, "Gemini": 0, "STELLA": 0, "VirtualLab": 0}}, {"challenge": "MOD", "prompt": "Q3_guided", "counts": {"VirtualLab": 1, "CODEX": 2, "Cursor": 2, "ClaudeCode": 2, "Biomni": 0, "ClaudeGLM": 0, "CopilotCLI": 0, "Gemini": 0, "STELLA": 0}}, {"challenge": "MillionPromoters", "prompt": "Q1_guided", "counts": {"Gemini": 4, "ClaudeCode": 5, "VirtualLab": 5, "CODEX": 3, "STELLA": 3, "Biomni": 0, "ClaudeGLM": 0}}, {"challenge": "MillionPromoters", "prompt": "Q1_guidedpaper", "counts": {"Gemini": 3, "CODEX": 4, "VirtualLab": 3, "Biomni": 0, "ClaudeCode": 0, "STELLA": 0}}, {"challenge": "MillionPromoters", "prompt": "Q1_guidedpaperwriteup", "counts": {"CODEX": 3, "VirtualLab": 3, "Gemini": 3, "ClaudeCode": 0}}, {"challenge": "MillionPromoters", "prompt": "Q1_hard", "counts": {"Gemini": 4, "ClaudeGLM": 1, "STELLA": 1, "ClaudeCode": 2, "CODEX": 4, "VirtualLab": 5, "Biomni": 0}}, {"challenge": "NCICPTAC", "prompt": "Q2_guided", "counts": {"ClaudeCode": 5, "Cursor": 5, "Biomni": 5, "Gemini": 2, "VirtualLab": 4, "STELLA": 3, "CODEX": 3, "ClaudeGLM": 1, "CopilotCLI": 0}}, {"challenge": "NCICPTAC", "prompt": "Q2_guidedpaper", "counts": {"ClaudeCode": 4, "Biomni": 5, "Cursor": 5, "STELLA": 4, "Gemini": 1, "VirtualLab": 5, "CODEX": 3, "ClaudeGLM": 0}}, {"challenge": "NCICPTAC", "prompt": "Q2_guidedpaperwriteup", "counts": {"Cursor": 5, "Biomni": 4, "ClaudeCode": 5, "CODEX": 3, "VirtualLab": 5, "ClaudeGLM": 1, "Gemini": 1, "STELLA": 1}}, {"challenge": "NCICPTAC", "prompt": "Q2_hard", "counts": {"Cursor": 5, "Biomni": 5, "CODEX": 3, "ClaudeCode": 5, "Gemini": 2, "VirtualLab": 5, "STELLA": 3, "ClaudeGLM": 0}}, {"challenge": "NCICPTAC", "prompt": "Q3_guided", "counts": {"ClaudeGLM": 0, "ClaudeCode": 0, "CODEX": 0, "CopilotCLI": 0, "STELLA": 0, "Cursor": 0, "Biomni": 0}}, {"challenge": "NCICPTAC", "prompt": "Q3_guidedpaper", "counts": {"ClaudeCode": 0}}, {"challenge": "NCICPTAC", "prompt": "Q3_hard", "counts": {"ClaudeCode": 0}}, {"challenge": "NetworkInference", "prompt": "Q1_guided", "counts": {"Biomni": 4, "Gemini": 3, "ClaudeGLM": 1, "ClaudeCode": 3, "STELLA": 2, "CODEX": 9, "Cursor": 7, "CopilotCLI": 0, "VirtualLab": 0}}, {"challenge": "NetworkInference", "prompt": "Q1_guidedpaper", "counts": {"ClaudeCode": 2, "Gemini": 4, "Biomni": 4, "ClaudeGLM": 1, "STELLA": 0, "CODEX": 8, "Cursor": 2, "VirtualLab": 2, "CopilotCLI": 0}}, {"challenge": "NetworkInference", "prompt": "Q1_hard", "counts": {"Biomni": 4, "Gemini": 5, "ClaudeCode": 4, "STELLA": 4, "CODEX": 3, "ClaudeGLM": 3, "VirtualLab": 4, "Cursor": 5, "CopilotCLI": 0}}, {"challenge": "Olfaction2025", "prompt": "Q1_guided", "counts": {"Cursor": 3, "STELLA": 3, "VirtualLab": 3, "Gemini": 4, "CODEX": 3, "ClaudeGLM": 3, "Biomni": 3, "ClaudeCode": 3}}, {"challenge": "Olfaction2025", "prompt": "Q1_hard", "counts": {"ClaudeCode": 3, "ClaudeGLM": 1, "CODEX": 3, "Biomni": 3, "STELLA": 0, "Gemini": 3, "VirtualLab": 3, "Cursor": 3}}, {"challenge": "Olfaction2025", "prompt": "Q2_guided", "counts": {"ClaudeCode": 3, "CODEX": 3, "Gemini": 3, "Biomni": 5, "STELLA": 3, "ClaudeGLM": 4, "Cursor": 3, "VirtualLab": 4}}, {"challenge": "Olfaction2025", "prompt": "Q2_hard", "counts": {"Gemini": 2, "Biomni": 4, "ClaudeCode": 3, "CODEX": 3, "STELLA": 1, "ClaudeGLM": 0, "Cursor": 3, "VirtualLab": 4}}, {"challenge": "Olfactory", "prompt": "Q1_guided", "counts": {"VirtualLab": 3, "Gemini": 3, "Biomni": 3, "STELLA": 1, "ClaudeCode": 3, "CODEX": 3, "ClaudeGLM": 5, "Cursor": 3}}, {"challenge": "Olfactory", "prompt": "Q1_guidedpaper", "counts": {"Cursor": 3, "ClaudeCode": 4, "STELLA": 3, "VirtualLab": 3, "Gemini": 2, "ClaudeGLM": 3, "CODEX": 3, "Biomni": 3}}, {"challenge": "Olfactory", "prompt": "Q1_guidedpaperwriteup", "counts": {"ClaudeCode": 2, "Biomni": 3, "STELLA": 3, "Gemini": 3, "VirtualLab": 3, "CODEX": 3, "Cursor": 3, "ClaudeGLM": 3}}, {"challenge": "Olfactory", "prompt": "Q1_hard", "counts": {"ClaudeCode": 3, "CODEX": 3, "Cursor": 3, "STELLA": 1, "ClaudeGLM": 3, "Gemini": 3, "Biomni": 4, "VirtualLab": 3}}, {"challenge": "PANACEA", "prompt": "Q1_guided", "counts": {"Biomni": 6, "CODEX": 6, "ClaudeGLM": 8, "ClaudeCode": 10, "VirtualLab": 3, "Cursor": 10, "Gemini": 6, "STELLA": 5, "CopilotCLI": 0}}, {"challenge": "PANACEA", "prompt": "Q1_guidedpaper", "counts": {"Biomni": 4, "Gemini": 3, "ClaudeCode": 4, "ClaudeGLM": 3, "CODEX": 3, "STELLA": 3, "Cursor": 5, "VirtualLab": 5, "CopilotCLI": 0}}, {"challenge": "PANACEA", "prompt": "Q1_hard", "counts": {"Biomni": 4, "Gemini": 3, "ClaudeGLM": 3, "ClaudeCode": 5, "CODEX": 3, "Cursor": 5, "STELLA": 2, "VirtualLab": 3, "CopilotCLI": 0}}, {"challenge": "syn20366914", "prompt": "Q1_guided", "counts": {"CODEX": 4, "ClaudeCode": 4, "Gemini": 1, "Biomni": 0, "STELLA": 3, "Cursor": 3, "ClaudeGLM": 2, "VirtualLab": 4, "CopilotCLI": 0}}, {"challenge": "syn20366914", "prompt": "Q1_guided_paper", "counts": {"Cursor": 1, "Biomni": 0, "CODEX": 1, "ClaudeCode": 1, "VirtualLab": 1, "ClaudeGLM": 0, "CopilotCLI": 0, "Gemini": 0}}, {"challenge": "syn20366914", "prompt": "Q1_hard", "counts": {"ClaudeCode": 2, "Gemini": 1, "CODEX": 2, "Cursor": 1, "VirtualLab": 1, "Biomni": 0, "ClaudeGLM": 0, "STELLA": 0}}, {"challenge": "syn20366914", "prompt": "Q2_guided", "counts": {"Biomni": 7, "Gemini": 2, "ClaudeCode": 5, "CODEX": 3, "STELLA": 2, "ClaudeGLM": 5, "Cursor": 5, "VirtualLab": 7, "CopilotCLI": 0}}, {"challenge": "syn20366914", "prompt": "Q2_guided_paper", "counts": {"CODEX": 1, "ClaudeCode": 1, "Cursor": 1, "ClaudeGLM": 0, "CopilotCLI": 0, "Gemini": 0}}, {"challenge": "syn20366914", "prompt": "Q2_hard", "counts": {"CODEX": 1, "ClaudeCode": 1, "Gemini": 1, "Biomni": 0, "Cursor": 1, "ClaudeGLM": 0, "STELLA": 0, "VirtualLab": 0}}, {"challenge": "syn20366914", "prompt": "Q3_guided", "counts": {"Gemini": 1, "ClaudeCode": 5, "Biomni": 6, "Cursor": 5, "CODEX": 3, "ClaudeGLM": 4, "VirtualLab": 3, "STELLA": 4, "CopilotCLI": 0}}, {"challenge": "syn20366914", "prompt": "Q3_guided_paper", "counts": {"CODEX": 1, "ClaudeCode": 1, "Gemini": 1, "Cursor": 1, "ClaudeGLM": 0, "CopilotCLI": 0}}, {"challenge": "syn20366914", "prompt": "Q3_hard", "counts": {"Biomni": 5, "ClaudeCode": 5, "CODEX": 5, "STELLA": 1, "Gemini": 1, "Cursor": 5, "ClaudeGLM": 0, "VirtualLab": 5}}, {"challenge": "syn20366914", "prompt": "Q4_guided", "counts": {"CODEX": 3, "Biomni": 7, "Cursor": 5, "ClaudeCode": 5, "STELLA": 2, "Gemini": 2, "ClaudeGLM": 6, "VirtualLab": 5, "CopilotCLI": 0}}, {"challenge": "syn20366914", "prompt": "Q4_guided_paper", "counts": {"Cursor": 1, "Gemini": 1, "CODEX": 1, "ClaudeCode": 1, "ClaudeGLM": 0, "CopilotCLI": 0}}, {"challenge": "syn20366914", "prompt": "Q4_hard", "counts": {"Gemini": 1, "Biomni": 1, "CODEX": 1, "Cursor": 1, "ClaudeCode": 1, "VirtualLab": 1, "ClaudeGLM": 0, "STELLA": 0}}, {"challenge": "syn4231880", "prompt": "Q1a_guided", "counts": {"ClaudeGLM": 2, "STELLA": 4, "Biomni": 4, "CODEX": 5, "Gemini": 3, "Cursor": 5, "ClaudeCode": 5, "VirtualLab": 5, "CopilotCLI": 0}}, {"challenge": "syn4231880", "prompt": "Q1a_guided_paper", "counts": {"ClaudeCode": 1, "Cursor": 1, "CODEX": 1, "STELLA": 1, "VirtualLab": 1, "Gemini": 1, "ClaudeGLM": 0, "CopilotCLI": 0}}, {"challenge": "syn4231880", "prompt": "Q1a_hard", "counts": {"Gemini": 2, "ClaudeGLM": 2, "CODEX": 3, "STELLA": 1, "Cursor": 3, "ClaudeCode": 4, "Biomni": 3, "VirtualLab": 3}}, {"challenge": "syn4231880", "prompt": "Q1b_guided", "counts": {"STELLA": 4, "Gemini": 3, "Biomni": 4, "ClaudeCode": 5, "ClaudeGLM": 1, "VirtualLab": 3, "CODEX": 5, "Cursor": 5, "CopilotCLI": 0}}, {"challenge": "syn4231880", "prompt": "Q1b_guided_paper", "counts": {"CODEX": 1, "Cursor": 1, "ClaudeCode": 1, "Gemini": 1, "ClaudeGLM": 0, "CopilotCLI": 0}}, {"challenge": "syn4231880", "prompt": "Q1b_hard", "counts": {"Gemini": 3, "CODEX": 3, "Cursor": 3, "ClaudeGLM": 1, "ClaudeCode": 5, "Biomni": 4, "STELLA": 1, "VirtualLab": 3}}, {"challenge": "syn4231880", "prompt": "Q2_guided", "counts": {"ClaudeCode": 3, "Biomni": 1, "CODEX": 0, "ClaudeGLM": 0, "CopilotCLI": 0, "Cursor": 0, "Gemini": 0, "STELLA": 0, "VirtualLab": 0}}, {"challenge": "syn4231880", "prompt": "Q2_guided_paper", "counts": {"CODEX": 0, "ClaudeCode": 0, "ClaudeGLM": 0, "CopilotCLI": 0, "Cursor": 0, "Gemini": 0, "VirtualLab": 0}}, {"challenge": "syn4231880", "prompt": "Q2_hard", "counts": {"Cursor": 2, "ClaudeCode": 2, "Gemini": 1, "CODEX": 2, "Biomni": 0, "ClaudeGLM": 0, "STELLA": 0, "VirtualLab": 0}}]}, "all": {"agents": ["Biomni", "CODEX", "ClaudeCode", "ClaudeGLM", "CopilotCLI", "Cursor", "Gemini", "STELLA", "VirtualLab"], "rows": [{"challenge": "BEATAML", "prompt": "SC1_guided", "counts": {"Cursor": 6, "ClaudeCode": 8, "STELLA": 6, "VirtualLab": 6, "Gemini": 5, "ClaudeGLM": 6, "CODEX": 7, "Biomni": 6, "CopilotCLI": 4}}, {"challenge": "BEATAML", "prompt": "SC1_guidedpaper", "counts": {"ClaudeCode": 7, "Biomni": 1, "CopilotCLI": 1, "Gemini": 2, "STELLA": 2, "Cursor": 2, "VirtualLab": 1, "CODEX": 0, "ClaudeGLM": 0}}, {"challenge": "BEATAML", "prompt": "SC1_hard", "counts": {"VirtualLab": 6, "STELLA": 6, "ClaudeCode": 6, "CODEX": 6, "Cursor": 8, "ClaudeGLM": 8, "Biomni": 9, "CopilotCLI": 4, "Gemini": 4}}, {"challenge": "BEATAML", "prompt": "SC2_guided", "counts": {"CODEX": 5, "ClaudeCode": 4, "Cursor": 5, "CopilotCLI": 1, "Gemini": 5, "VirtualLab": 6, "Biomni": 5, "STELLA": 5, "ClaudeGLM": 10}}, {"challenge": "BEATAML", "prompt": "SC2_guidedpaper", "counts": {"ClaudeCode": 3, "Cursor": 1, "Gemini": 2, "Biomni": 2, "CopilotCLI": 1, "CODEX": 0, "ClaudeGLM": 0, "STELLA": 0, "VirtualLab": 0}}, {"challenge": "BEATAML", "prompt": "SC2_hard", "counts": {"CODEX": 6, "ClaudeCode": 6, "CopilotCLI": 1, "ClaudeGLM": 6, "Gemini": 4, "Cursor": 4, "STELLA": 6, "Biomni": 5, "VirtualLab": 7}}, {"challenge": "EAR", "prompt": "Q1_guided", "counts": {"VirtualLab": 6, "STELLA": 6, "ClaudeGLM": 6, "ClaudeCode": 7, "Gemini": 6, "CopilotCLI": 6, "Cursor": 6, "CODEX": 6, "Biomni": 8}}, {"challenge": "EAR", "prompt": "Q1_guidedpaper", "counts": {"STELLA": 6, "Cursor": 6, "Gemini": 6, "ClaudeCode": 6, "CODEX": 6, "VirtualLab": 6, "CopilotCLI": 6, "ClaudeGLM": 6, "Biomni": 6}}, {"challenge": "EAR", "prompt": "Q1_hard", "counts": {"CopilotCLI": 6, "Gemini": 6, "CODEX": 6, "Cursor": 6, "ClaudeGLM": 6, "STELLA": 6, "ClaudeCode": 6, "Biomni": 6, "VirtualLab": 6}}, {"challenge": "HFM", "prompt": "Q1_guided", "counts": {"ClaudeCode": 0, "CopilotCLI": 0}}, {"challenge": "MOD", "prompt": "Q1_guided", "counts": {"ClaudeCode": 11, "Gemini": 3, "STELLA": 5, "VirtualLab": 6, "CopilotCLI": 14, "CODEX": 6, "Biomni": 7, "ClaudeGLM": 10, "Cursor": 4}}, {"challenge": "MOD", "prompt": "Q1_guidedpaper", "counts": {"ClaudeGLM": 4, "CopilotCLI": 6, "STELLA": 5, "ClaudeCode": 4, "Biomni": 8, "Cursor": 5, "CODEX": 3, "Gemini": 3, "VirtualLab": 3}}, {"challenge": "MOD", "prompt": "Q1_guidedpaperwriteup", "counts": {"Biomni": 5, "ClaudeGLM": 1, "ClaudeCode": 5, "Cursor": 5, "CODEX": 3, "STELLA": 4, "VirtualLab": 2, "Gemini": 0}}, {"challenge": "MOD", "prompt": "Q1_hard", "counts": {"ClaudeGLM": 2, "CODEX": 3, "Gemini": 1, "Cursor": 3, "STELLA": 1, "VirtualLab": 5, "ClaudeCode": 8, "Biomni": 6}}, {"challenge": "MOD", "prompt": "Q2_guided", "counts": {"Gemini": 3, "CopilotCLI": 4, "ClaudeCode": 1, "STELLA": 1, "Biomni": 1, "Cursor": 1, "CODEX": 2, "VirtualLab": 1, "ClaudeGLM": 0}}, {"challenge": "MOD", "prompt": "Q3_guided", "counts": {"ClaudeGLM": 2, "Gemini": 3, "Biomni": 3, "STELLA": 2, "CopilotCLI": 6, "Cursor": 2, "VirtualLab": 3, "ClaudeCode": 2, "CODEX": 2}}, {"challenge": "MillionPromoters", "prompt": "Q1_guided", "counts": {"Gemini": 5, "ClaudeCode": 5, "VirtualLab": 5, "CODEX": 3, "STELLA": 3, "Biomni": 0, "ClaudeGLM": 0}}, {"challenge": "MillionPromoters", "prompt": "Q1_guidedpaper", "counts": {"Gemini": 3, "CODEX": 4, "VirtualLab": 4, "Biomni": 0, "ClaudeCode": 0, "STELLA": 0}}, {"challenge": "MillionPromoters", "prompt": "Q1_guidedpaperwriteup", "counts": {"CODEX": 3, "VirtualLab": 3, "Gemini": 3, "ClaudeCode": 0}}, {"challenge": "MillionPromoters", "prompt": "Q1_hard", "counts": {"Gemini": 5, "ClaudeGLM": 1, "STELLA": 1, "ClaudeCode": 2, "CODEX": 4, "VirtualLab": 6, "Biomni": 0}}, {"challenge": "NCICPTAC", "prompt": "Q2_guided", "counts": {"CopilotCLI": 6, "ClaudeCode": 15, "Cursor": 6, "Biomni": 6, "Gemini": 3, "CODEX": 3, "VirtualLab": 4, "STELLA": 3, "ClaudeGLM": 1}}, {"challenge": "NCICPTAC", "prompt": "Q2_guidedpaper", "counts": {"ClaudeCode": 5, "Biomni": 5, "Cursor": 5, "STELLA": 4, "Gemini": 1, "VirtualLab": 5, "CODEX": 3, "ClaudeGLM": 0}}, {"challenge": "NCICPTAC", "prompt": "Q2_guidedpaperwriteup", "counts": {"Cursor": 5, "Biomni": 4, "ClaudeCode": 5, "CODEX": 3, "VirtualLab": 5, "ClaudeGLM": 1, "Gemini": 1, "STELLA": 1}}, {"challenge": "NCICPTAC", "prompt": "Q2_hard", "counts": {"ClaudeCode": 6, "Cursor": 5, "Biomni": 5, "CODEX": 3, "Gemini": 2, "VirtualLab": 5, "STELLA": 3, "ClaudeGLM": 0}}, {"challenge": "NCICPTAC", "prompt": "Q3_guided", "counts": {"ClaudeGLM": 3, "ClaudeCode": 4, "CODEX": 0, "CopilotCLI": 2, "STELLA": 3, "Cursor": 0, "Biomni": 2}}, {"challenge": "NCICPTAC", "prompt": "Q3_guidedpaper", "counts": {"ClaudeCode": 1}}, {"challenge": "NCICPTAC", "prompt": "Q3_hard", "counts": {"ClaudeCode": 1}}, {"challenge": "NetworkInference", "prompt": "Q1_guided", "counts": {"Gemini": 8, "Biomni": 8, "ClaudeGLM": 4, "STELLA": 5, "Cursor": 11, "CODEX": 12, "ClaudeCode": 6, "VirtualLab": 6, "CopilotCLI": 0}}, {"challenge": "NetworkInference", "prompt": "Q1_guidedpaper", "counts": {"Cursor": 7, "ClaudeCode": 6, "Biomni": 9, "Gemini": 8, "STELLA": 1, "ClaudeGLM": 4, "CODEX": 11, "VirtualLab": 6, "CopilotCLI": 0}}, {"challenge": "NetworkInference", "prompt": "Q1_hard", "counts": {"CODEX": 6, "Biomni": 7, "Gemini": 8, "ClaudeCode": 6, "ClaudeGLM": 6, "STELLA": 6, "Cursor": 6, "VirtualLab": 12, "CopilotCLI": 0}}, {"challenge": "Olfaction2025", "prompt": "Q1_guided", "counts": {"Gemini": 5, "STELLA": 3, "VirtualLab": 3, "CODEX": 3, "ClaudeCode": 4, "ClaudeGLM": 3, "Cursor": 4, "Biomni": 3}}, {"challenge": "Olfaction2025", "prompt": "Q1_hard", "counts": {"ClaudeCode": 3, "ClaudeGLM": 1, "Biomni": 3, "STELLA": 0, "Gemini": 4, "CODEX": 4, "VirtualLab": 3, "Cursor": 3}}, {"challenge": "Olfaction2025", "prompt": "Q2_guided", "counts": {"CODEX": 3, "Biomni": 5, "STELLA": 3, "Gemini": 4, "ClaudeGLM": 4, "ClaudeCode": 3, "Cursor": 3, "VirtualLab": 5}}, {"challenge": "Olfaction2025", "prompt": "Q2_hard", "counts": {"Gemini": 3, "Biomni": 4, "ClaudeCode": 3, "CODEX": 3, "STELLA": 1, "ClaudeGLM": 0, "Cursor": 3, "VirtualLab": 4}}, {"challenge": "Olfactory", "prompt": "Q1_guided", "counts": {"VirtualLab": 3, "Gemini": 3, "Biomni": 3, "STELLA": 1, "ClaudeCode": 3, "CODEX": 3, "ClaudeGLM": 5, "Cursor": 3}}, {"challenge": "Olfactory", "prompt": "Q1_guidedpaper", "counts": {"Cursor": 3, "ClaudeCode": 4, "STELLA": 3, "VirtualLab": 3, "Gemini": 2, "ClaudeGLM": 3, "CODEX": 3, "Biomni": 3}}, {"challenge": "Olfactory", "prompt": "Q1_guidedpaperwriteup", "counts": {"ClaudeCode": 2, "Biomni": 3, "STELLA": 3, "Gemini": 3, "VirtualLab": 3, "CODEX": 3, "Cursor": 3, "ClaudeGLM": 3}}, {"challenge": "Olfactory", "prompt": "Q1_hard", "counts": {"ClaudeCode": 3, "CODEX": 3, "Cursor": 3, "STELLA": 1, "ClaudeGLM": 3, "Gemini": 3, "Biomni": 4, "VirtualLab": 3}}, {"challenge": "PANACEA", "prompt": "Q1_guided", "counts": {"Biomni": 6, "CODEX": 6, "ClaudeGLM": 8, "ClaudeCode": 10, "VirtualLab": 6, "Cursor": 10, "Gemini": 6, "STELLA": 6, "CopilotCLI": 0}}, {"challenge": "PANACEA", "prompt": "Q1_guidedpaper", "counts": {"Biomni": 8, "Gemini": 6, "ClaudeCode": 8, "ClaudeGLM": 6, "CODEX": 6, "STELLA": 6, "Cursor": 10, "VirtualLab": 10, "CopilotCLI": 0}}, {"challenge": "PANACEA", "prompt": "Q1_hard", "counts": {"Biomni": 8, "Gemini": 6, "ClaudeGLM": 5, "ClaudeCode": 10, "CODEX": 6, "Cursor": 10, "STELLA": 6, "VirtualLab": 6, "CopilotCLI": 0}}, {"challenge": "syn20366914", "prompt": "Q1_guided", "counts": {"Cursor": 3, "CODEX": 4, "Gemini": 1, "Biomni": 0, "ClaudeCode": 4, "STELLA": 3, "ClaudeGLM": 2, "VirtualLab": 5, "CopilotCLI": 0}}, {"challenge": "syn20366914", "prompt": "Q1_guided_paper", "counts": {"Cursor": 1, "ClaudeCode": 1, "Biomni": 0, "CODEX": 1, "VirtualLab": 1, "ClaudeGLM": 0, "CopilotCLI": 0, "Gemini": 0}}, {"challenge": "syn20366914", "prompt": "Q1_hard", "counts": {"ClaudeCode": 2, "Gemini": 1, "CODEX": 2, "Cursor": 1, "VirtualLab": 1, "Biomni": 0, "ClaudeGLM": 0, "STELLA": 0}}, {"challenge": "syn20366914", "prompt": "Q2_guided", "counts": {"Biomni": 7, "Gemini": 2, "ClaudeCode": 5, "CODEX": 3, "STELLA": 2, "ClaudeGLM": 5, "Cursor": 5, "VirtualLab": 7, "CopilotCLI": 0}}, {"challenge": "syn20366914", "prompt": "Q2_guided_paper", "counts": {"CODEX": 1, "ClaudeCode": 1, "Cursor": 1, "ClaudeGLM": 0, "CopilotCLI": 0, "Gemini": 0}}, {"challenge": "syn20366914", "prompt": "Q2_hard", "counts": {"CODEX": 1, "ClaudeCode": 1, "Gemini": 1, "Biomni": 0, "Cursor": 1, "ClaudeGLM": 0, "STELLA": 0, "VirtualLab": 0}}, {"challenge": "syn20366914", "prompt": "Q3_guided", "counts": {"Gemini": 1, "ClaudeCode": 5, "Biomni": 6, "Cursor": 5, "CODEX": 3, "ClaudeGLM": 4, "VirtualLab": 3, "STELLA": 4, "CopilotCLI": 0}}, {"challenge": "syn20366914", "prompt": "Q3_guided_paper", "counts": {"CODEX": 1, "ClaudeCode": 1, "Gemini": 1, "Cursor": 1, "ClaudeGLM": 0, "CopilotCLI": 0}}, {"challenge": "syn20366914", "prompt": "Q3_hard", "counts": {"Biomni": 5, "ClaudeCode": 5, "CODEX": 5, "STELLA": 1, "Gemini": 1, "Cursor": 5, "ClaudeGLM": 0, "VirtualLab": 5}}, {"challenge": "syn20366914", "prompt": "Q4_guided", "counts": {"CopilotCLI": 4, "CODEX": 3, "Biomni": 7, "Cursor": 5, "ClaudeCode": 5, "STELLA": 2, "Gemini": 2, "ClaudeGLM": 6, "VirtualLab": 5}}, {"challenge": "syn20366914", "prompt": "Q4_guided_paper", "counts": {"Cursor": 1, "Gemini": 1, "CODEX": 1, "ClaudeCode": 1, "CopilotCLI": 6, "ClaudeGLM": 0}}, {"challenge": "syn20366914", "prompt": "Q4_hard", "counts": {"Gemini": 1, "Biomni": 1, "CODEX": 1, "Cursor": 1, "ClaudeCode": 1, "VirtualLab": 1, "ClaudeGLM": 0, "STELLA": 0}}, {"challenge": "syn4231880", "prompt": "Q1a_guided", "counts": {"ClaudeGLM": 11, "CopilotCLI": 6, "ClaudeCode": 5, "STELLA": 4, "Biomni": 4, "CODEX": 5, "Gemini": 3, "Cursor": 5, "VirtualLab": 5}}, {"challenge": "syn4231880", "prompt": "Q1a_guided_paper", "counts": {"CopilotCLI": 6, "ClaudeCode": 1, "Cursor": 1, "CODEX": 1, "STELLA": 1, "VirtualLab": 1, "Gemini": 1, "ClaudeGLM": 0}}, {"challenge": "syn4231880", "prompt": "Q1a_hard", "counts": {"Gemini": 2, "ClaudeGLM": 2, "CODEX": 3, "STELLA": 1, "Cursor": 3, "ClaudeCode": 4, "Biomni": 3, "VirtualLab": 3}}, {"challenge": "syn4231880", "prompt": "Q1b_guided", "counts": {"CopilotCLI": 6, "ClaudeGLM": 4, "ClaudeCode": 5, "STELLA": 4, "Gemini": 3, "Biomni": 4, "VirtualLab": 3, "CODEX": 5, "Cursor": 5}}, {"challenge": "syn4231880", "prompt": "Q1b_guided_paper", "counts": {"CODEX": 1, "CopilotCLI": 2, "ClaudeCode": 1, "Cursor": 1, "Gemini": 1, "ClaudeGLM": 0}}, {"challenge": "syn4231880", "prompt": "Q1b_hard", "counts": {"Gemini": 3, "CODEX": 3, "Cursor": 3, "ClaudeGLM": 1, "ClaudeCode": 5, "Biomni": 4, "STELLA": 1, "VirtualLab": 3}}, {"challenge": "syn4231880", "prompt": "Q2_guided", "counts": {"ClaudeCode": 3, "Biomni": 1, "Cursor": 0, "Gemini": 3, "CopilotCLI": 2, "VirtualLab": 2, "CODEX": 0, "ClaudeGLM": 0, "STELLA": 0}}, {"challenge": "syn4231880", "prompt": "Q2_guided_paper", "counts": {"Gemini": 1, "Cursor": 0, "CODEX": 0, "ClaudeCode": 0, "ClaudeGLM": 0, "CopilotCLI": 0, "VirtualLab": 0}}, {"challenge": "syn4231880", "prompt": "Q2_hard", "counts": {"Cursor": 2, "ClaudeCode": 2, "Gemini": 1, "CODEX": 2, "Biomni": 0, "ClaudeGLM": 0, "STELLA": 0, "VirtualLab": 0}}]}};
+
+  const AGENT_LABELS = {
+    ClaudeCode: "ClaudeCode",
+    CODEX: "CODEX",
+    Cursor: "Cursor",
+    Gemini: "Gemini",
+    ClaudeGLM: "ClaudeGLM",
+    Biomni: "Biomni",
+    STELLA: "STELLA",
+    VirtualLab: "VirtualLab",
+    CopilotCLI: "CopilotCLI",
+  };
+
+  // Fixed, deliberate column order: primary coding agents first, then
+  // biomedical/orchestration agents, then thin-coverage extras. OpenHands and
+  // Qwen are retired from the harness (stale run dirs only, no live agent
+  // config) and are excluded entirely. ClaudeCodeAPI/ClaudeCodeOAuth are
+  // merged into ClaudeCode server-side (same agent, different auth method).
+  const ORDER = ["ClaudeCode", "CODEX", "Cursor", "Gemini",
+                 "ClaudeGLM", "Biomni", "STELLA", "VirtualLab", "CopilotCLI"];
+  const agents = ORDER.filter(a => DATASETS.verified.agents.includes(a));
+
+  // Index both datasets by "challenge||prompt" so a mode switch is a pure
+  // re-render, not a rebuild: every row exists in both (a variant with zero
+  // self-reports still gets a row with all-zero counts).
+  const keyOf = (r) => r.challenge + "||" + r.prompt;
+  const verifiedByKey = new Map(DATASETS.verified.rows.map(r => [keyOf(r), r]));
+  const allByKey = new Map(DATASETS.all.rows.map(r => [keyOf(r), r]));
+  const rowOrder = DATASETS.verified.rows.map(keyOf);
+
+  let mode = "verified"; // "verified" | "all"
+
+  const headRow = document.getElementById("headRow");
+  const rowHeadTh = document.createElement("th");
+  rowHeadTh.className = "row-head-col";
+  rowHeadTh.textContent = "Challenge / prompt";
+  headRow.appendChild(rowHeadTh);
+  agents.forEach(a => {
+    const th = document.createElement("th");
+    th.textContent = AGENT_LABELS[a] || a;
+    headRow.appendChild(th);
+  });
+  const totalTh = document.createElement("th");
+  totalTh.className = "agent-total";
+  totalTh.textContent = "Row max";
+  headRow.appendChild(totalTh);
+
+  const tbody = document.getElementById("body");
+  let lastChallenge = null;
+  const trs = [];
+
+  rowOrder.forEach(key => {
+    const vRow = verifiedByKey.get(key);
+    const tr = document.createElement("tr");
+    if (vRow.challenge !== lastChallenge) {
+      tr.classList.add("challenge-start");
+      lastChallenge = vRow.challenge;
+    }
+    tr.dataset.search = (vRow.challenge + " " + vRow.prompt).toLowerCase();
+
+    const th = document.createElement("th");
+    th.innerHTML = '<span class="challenge-name">' + vRow.challenge + '</span>' +
+      '<span class="prompt-name">' + vRow.prompt + '</span>';
+    tr.appendChild(th);
+
+    const cells = agents.map(a => {
+      const td = document.createElement("td");
+      td.className = "count-cell";
+      const pill = document.createElement("span");
+      pill.className = "pill";
+      const delta = document.createElement("span");
+      delta.className = "pill-delta";
+      td.appendChild(pill);
+      td.appendChild(delta);
+      tr.appendChild(td);
+      return { pill, delta };
+    });
+
+    const totalTd = document.createElement("td");
+    totalTd.className = "row-total";
+    tr.appendChild(totalTd);
+
+    tbody.appendChild(tr);
+    trs.push({ tr, cells, key, totalTd });
+  });
+
+  function render() {
+    const t = Number(thresholdInput.value);
+    let qualifying = 0;
+    trs.forEach(({ cells, key, totalTd }) => {
+      const vRow = verifiedByKey.get(key);
+      const aRow = allByKey.get(key);
+      let rowMax = 0;
+      agents.forEach((a, i) => {
+        const vN = vRow.counts[a] || 0;
+        const aN = aRow.counts[a] || 0;
+        const n = mode === "all" ? aN : vN;
+        const extra = mode === "all" ? Math.max(0, aN - vN) : 0;
+        rowMax = Math.max(rowMax, n);
+
+        const { pill, delta } = cells[i];
+        pill.textContent = n === 0 ? "·" : n;
+        pill.dataset.value = n;
+        pill.classList.remove("zero", "partial", "full");
+        if (n === 0) pill.classList.add("zero");
+        else if (n >= t) { pill.classList.add("full"); qualifying++; }
+        else pill.classList.add("partial");
+
+        delta.textContent = extra > 0 ? "+" + extra : "";
+        delta.title = extra > 0 ? extra + " additional self-reported (unverified) run" + (extra === 1 ? "" : "s") : "";
+      });
+      totalTd.textContent = rowMax;
+    });
+    thresholdValue.textContent = t;
+    document.getElementById("legendDelta").style.display = mode === "all" ? "" : "none";
+    document.getElementById("modeDescription").textContent = mode === "all"
+      ? "Every cell counts runs that are self-scored and accompanied by a summary.txt — including self-reported-only runs on challenges whose official board requires host verification. The amber “+N” marks how many of the count came from self-reports without a score.json. Retired agents (OpenHands, Qwen) are excluded."
+      : "Every cell counts runs that clear three bars: self-scored by the agent, confirmed by the host-side scorer (score.json present, verified: true), and accompanied by a summary.txt write-up — self-reported-only runs and score-only runs missing their summary don't count. Retired agents (OpenHands, Qwen) are excluded.";
+    document.getElementById("statLine").innerHTML =
+      "<strong>" + qualifying + "</strong> cells &ge; " + t + " of " +
+      (agents.length * rowOrder.length) + " total";
+  }
+
+  const thresholdInput = document.getElementById("threshold");
+  const thresholdValue = document.getElementById("thresholdValue");
+  thresholdInput.addEventListener("input", render);
+
+  document.getElementById("search").addEventListener("input", (e) => {
+    const q = e.target.value.trim().toLowerCase();
+    trs.forEach(({ tr }) => {
+      tr.classList.toggle("row-hidden", q.length > 0 && !tr.dataset.search.includes(q));
+    });
+  });
+
+  document.getElementById("modeToggle").addEventListener("click", (e) => {
+    const btn = e.target.closest(".mode-btn");
+    if (!btn || btn.classList.contains("active")) return;
+    document.querySelectorAll(".mode-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    mode = btn.dataset.mode;
+    render();
+  });
+
+  render();
+  document.getElementById("footerNote").textContent =
+    rowOrder.length + " challenge×prompt cells × " + agents.length + " agents — generated from leaderboard.json / leaderboard_selfreported.json";
+</script>
+</body>
+</html>
